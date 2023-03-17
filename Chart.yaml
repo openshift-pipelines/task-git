@@ -1,0 +1,8 @@
+apiVersion: v2
+name: git
+version: 0.0.1
+description: |
+  This Task represents Git and is able to initialize and clone a remote
+  repository on the informed Workspace. It's likely to become the first `step`
+  on a Pipeline.
+type: application
