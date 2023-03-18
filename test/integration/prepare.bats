@@ -5,12 +5,10 @@ source ./test/helper/helper.sh
 prepare_sh="./scripts/prepare.sh"
 
 export PARAMS_URL="http://github.com/org/project.git"
-export PARAMS_REVISION="main"
 export PARAMS_VERBOSE="true"
 
 @test "[prepare.sh] should fail when mandatory configuration is not informed" {
 	unset PARAMS_URL
-	unset PARAMS_REVISION
 	unset WORKSPACES_OUTPUT_PATH
 
 	run bash --posix ${prepare_sh}

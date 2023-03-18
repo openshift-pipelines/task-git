@@ -49,9 +49,6 @@ assert_required_configuration_or_fail() {
     [[ -z "${PARAMS_URL}" ]] &&
         fail "Parameter URL is not set!"
 
-    [[ -z "${PARAMS_REVISION}" ]] &&
-        fail "Parameter REVISION is not set!"
-
     [[ -z "${WORKSPACES_OUTPUT_PATH}" ]] &&
         fail "Output Workspace is not set!"
 

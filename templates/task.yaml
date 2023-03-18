@@ -16,36 +16,39 @@ spec:
   workspaces:
     - name: output
       description: |
-        The git repo will be cloned onto the volume backing this Workspace.
+        The Git repository directory, data will be placed on the root of the
+        Workspace, or on the relative path defined by the SUBDIRECTORY
+        parameter.
     - name: ssh-directory
       optional: true
       description: |
-        A .ssh directory with private key, known_hosts, config, etc. Copied to
-        the user's home before git commands are executed.Used to authenticate
-        with the git remote when performing the clone. Binding a Secret to this
-        Workspace is strongly recommended over other volume types.
+        A `.ssh` directory with private key, `known_hosts`, `config`, etc.
+        Copied to the Git user's home before cloning the repository, in order to
+        server as authentication mechanismBinding a Secret to this Workspace is
+        strongly recommended over other volume types.
     - name: basic-auth
       optional: true
       description: |
-        A Workspace containing a .gitconfig and .git-credentials file. These
-        will be copied to the user's home before any git commands are run. Any
-        other files in this Workspace are ignored. It is strongly recommended
-        to use ssh-directory over basic-auth whenever possible and to bind a
+        A Workspace containing a `.gitconfig` and `.git-credentials` files.
+        These will be copied to the user's home before Git commands run. All
+        other files in this Workspace are ignored. It is strongly recommended to
+        use `ssh-directory` over `basic-auth` whenever possible, and to bind a
         Secret to this Workspace over other volume types.
     - name: ssl-ca-directory
       optional: true
       description: |
         A Workspace containing CA certificates, this will be used by Git to
-        verify the peer with when fetching or pushing over HTTPS.
+        verify the peer with when interacting with remote repositories using
+        HTTPS.
 
   params:
     - name: URL
       type: string
       description: |
-        Repository URL to clone from.
+        Git repository URL.
     - name: REVISION
       type: string
-      default: ""
+      default: main
       description: |
         Revision to checkout, an branch, tag, sha, ref, etc...
     - name: REFSPEC
@@ -56,51 +59,51 @@ spec:
       type: string
       default: "true"
       description: |
-        Initialize and fetch git submodules.
+        Initialize and fetch Git submodules.
     - name: DEPTH
       type: string
       default: "1"
       description: |
-        Perform a shallow clone, fetching only the most recent N commits.
+        Number of commits to fetch, a "shallow clone" is a single commit.
     - name: SSL_VERIFY
       type: string
       default: "true"
       description: |
-        Set the `http.sslVerify` global git config. Setting this to `false` is
-        not advised unless you are sure that you trust your git remote.
+        Sets the global `http.sslVerify` value, `false` is not advised unless
+        you trust the remote repository.
     - name: CRT_FILENAME
       type: string
       default: ca-bundle.crt
       description: |
-        File name of mounted crt using ssl-ca-directory Workspace. Default value
-        is "ca-bundle.crt".
+        Certificate Authority (CA) bundle filename on the `ssl-ca-directory`
+        Workspace.
     - name: SUBDIRECTORY
       type: string
       default: ""
       description: |
-        Subdirectory relative to the `output` Workspace to clone the repository.
+        Relative path to the `output` Workspace where the repository will be
+        cloned.
     - name: SPARSE_CHECKOUT_DIRECTORIES
       type: string
       default: ""
       description: |
-        Define the directory patterns to match or exclude when performing a
-        sparse checkout.
+        List of directory patterns split by comma to perform "sparse checkout".
     - name: DELETE_EXISTING
       type: string
       default: "true"
       description: |
-        Clean out the contents of the destination directory if it already exists
-        before cloning.
+        Clean out the contents of the `output` Workspace before cloning the
+        repository, if data exists.
     - name: HTTP_PROXY
       type: string
       default: ""
       description: |
-        HTTP proxy server for non-SSL requests.
+        HTTP proxy server (non-TLS requests).
     - name: HTTPS_PROXY
       type: string
       default: ""
       description: |
-        HTTPS proxy server for SSL requests.
+        HTTPS proxy server (TLS requests).
     - name: NO_PROXY
       type: string
       default: ""
@@ -115,18 +118,18 @@ spec:
       type: string
       default: "/home/git"
       description: |
-        Absolute path to the user's home directory.
+        Absolute path to the Git user home directory.
 
   results:
     - name: COMMIT
       description: |
-        The precise commit SHA that was fetched by this Task.
+        The precise commit SHA digest cloned.
     - name: URL
       description: |
-        The precise URL that was fetched by this Task.
+        The precise repository URL.
     - name: COMMITTER_DATE
       description: |
-        The epoch timestamp of the commit that was fetched by this Task.
+        The epoch timestamp of the commit cloned.
 
   volumes:
     - name: user-home

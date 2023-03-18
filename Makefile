@@ -17,18 +17,21 @@ ARGS ?=
 # on all targets
 .EXPORT_ALL_VARIABLES:
 
-# renders the task resource file printing it out on the standard output, you can redirect the output
-# of this target to a `kubectl apply -f -`, for istance
-helm-template:
-	helm template $(ARGS) $(CHART_NAME) .
+# uses helm to render the resource templates to the stdout
+define render-template
+	@helm template $(ARGS) $(CHART_NAME) .
+endef
 
-# renders and installs the task in the current namespace
+# renders the task resource file printing it out on the standard output
+helm-template:
+	$(call render-template)
+
+# renders and installs the resources (task)
 install:
-	helm template $(CHART_NAME) . |kubectl $(ARGS) apply -f -
+	$(call render-template) |kubectl $(ARGS) apply -f -
 
 # packages the helm-chart as a single tarball, using it's name and version to compose the file
-helm-package:
-	rm -f $(CHART_NAME)-*.tgz || true
+helm-package: clean
 	helm package $(ARGS) .
 	tar -ztvpf $(CHART_NAME)-$(CHART_VESION).tgz
 

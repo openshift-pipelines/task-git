@@ -2,7 +2,7 @@
 
 source ./test/helper/helper.sh
 
-@test "" {
+@test "[e2e] using the task to clone a remote repository" {
 	[ -n "${BASE_DIR}" ]
 
 	run kubectl delete taskrun --all
@@ -10,7 +10,6 @@ source ./test/helper/helper.sh
 
 	run tkn task start git \
 		--param="URL=https://github.com/tektoncd/community.git" \
-		--param="REVISION=main" \
 		--param="DEPTH=1" \
 		--param="VERBOSE=true" \
 		--use-param-defaults \
