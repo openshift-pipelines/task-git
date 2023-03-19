@@ -2,7 +2,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: {{ .Chart.Name }}
+  name: git
   labels:
     app.kubernetes.io/version: {{ .Chart.Version }}
 {{- if .Values.annotations }}
