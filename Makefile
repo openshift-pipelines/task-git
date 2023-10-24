@@ -1,6 +1,9 @@
 # using the chart name and version from chart's metadata
 CHART_NAME ?= $(shell awk '/^name:/ { print $$2 }' Chart.yaml)
-CHART_VESION ?= $(shell awk '/^version:/ { print $$2 }' Chart.yaml)
+CHART_VERSION ?= $(shell awk '/^version:/ { print $$2 }' Chart.yaml)
+
+# release directory where the Tekton resources are rendered into.
+RELEASE_DIR ?= /tmp/$(CHART_NAME)-$(CHART_VERSION)
 
 # bats entry point and default flags
 BATS_CORE = ./test/.bats/bats-core/bin/bats
@@ -29,6 +32,18 @@ helm-template:
 # renders and installs the resources (task)
 install:
 	$(call render-template) |kubectl $(ARGS) apply -f -
+
+# pepare a release
+prepare-release:
+	mkdir -p $(RELEASE_DIR)/task/$(CHART_NAME) || true
+	helm template $(ARGS) . > $(RELEASE_DIR)/task/$(CHART_NAME)/$(CHART_NAME).yaml
+	cp README.md $(RELEASE_DIR)/task/$(CHART_NAME)/
+	go run github.com/openshift-pipelines/tektoncd-catalog/cmd/catalog-cd@main release --output release --version $(CHART_VERSION) $(RELEASE_DIR)/task/$(CHART_NAME)
+	@echo "Now you can release:"
+	@echo "  git tag v$(CHART_VERSION) && git push v$(CHART_VERSION)"
+	@echo "  gh release create v$(CHART_VERSION) --generate-notes"
+	@echo "  gh release upload v$(CHART_VERSION) release/catalog.yaml"
+	@echo "  gh release upload v$(CHART_VERSION) release/resources.tar.gz"
 
 # packages the helm-chart as a single tarball, using it's name and version to compose the file
 helm-package: clean
