@@ -18,34 +18,11 @@ source ./test/helper/helper.sh
 		--showlog >&3
 	assert_success
 
-	#
-	# Asserting TaskRun Status
-	#
+	# waiting a few seconds before asserting results
+    sleep 30
 
-	readonly tmpl_file="${BASE_DIR}/go-template.tpl"
-
-	cat >${tmpl_file} <<EOS
-{{- range .status.conditions -}}
-  {{- if and (eq .type "Succeeded") (eq .status "True") }}
-    {{ .message }}
-  {{- end }}
-{{- end -}}
-EOS
-
-	run tkn taskrun describe --output=go-template-file --template=${tmpl_file}
-	assert_success
-	assert_success --partial 'All Steps have completed executing'
-
-	#
-	# Asserting Results
-	#
-
-	cat >${tmpl_file} <<EOS
-{{- range .status.taskResults -}}
-  {{ printf "%s=%s\n" .name .value }}
-{{- end -}}
-EOS
-	run tkn taskrun describe --output=go-template-file --template=${tmpl_file}
-	assert_success
-	assert_output --regexp $'^COMMIT=\S+\nCOMMITTER_DATE=\S+\nURL=\S+.*'
+	# asserting the TaskRun has finished successfuly
+	assert_tekton_resource taskrun --partial 'All Steps have completed executing'
+	# asserting the results are published as expected, matching the following expression
+	assert_tekton_resource taskrun --regexp $'COMMIT=\S+.\nCOMMITTER_DATE=\S+.\nURL=\S+*'
 }
