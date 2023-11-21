@@ -41,7 +41,7 @@ EOS
 	#
 
 	cat >${tmpl_file} <<EOS
-{{- range .status.taskResults -}}
+{{- range .status.results -}}
   {{ printf "%s=%s\n" .name .value }}
 {{- end -}}
 EOS
