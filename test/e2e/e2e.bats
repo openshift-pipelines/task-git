@@ -45,7 +45,7 @@ EOS
   {{ printf "%s=%s\n" .name .value }}
 {{- end -}}
 EOS
-	run tkn taskrun describe --output=go-template-file --template=${tmpl_file}
+	run tkn taskrun describe --output=go-template-file --template=${tmpl_file} --last
 	assert_success
 	assert_output --regexp $'^COMMIT=\S+\nCOMMITTER_DATE=\S+\nURL=\S+.*'
 }
