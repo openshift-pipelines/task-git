@@ -32,7 +32,7 @@ source ./test/helper/helper.sh
 {{- end -}}
 EOS
 
-	run tkn taskrun describe --output=go-template-file --template=${tmpl_file}
+	run tkn taskrun describe --output=go-template-file --template=${tmpl_file} --last
 	assert_success
 	assert_success --partial 'All Steps have completed executing'
 
