@@ -1,6 +1,6 @@
 apiVersion: v2
 name: task-git
-version: 0.1.0
+version: 0.2.0
 description: |
   This Task represents Git and is able to initialize and clone a remote
   repository on the informed Workspace. It's likely to become the first `step`
