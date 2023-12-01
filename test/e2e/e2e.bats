@@ -7,14 +7,6 @@ source ./test/helper/helper.sh
 
 	run kubectl delete taskrun --all
 	assert_success
-
-	kubectl delete secret regcred || true
-	run kubectl create secret generic regcred \
-        	--from-file=.dockerconfigjson=$HOME/.docker/config.json \
-        	--type=kubernetes.io/dockerconfigjson
-	assert_success
-	run kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "regcred"}]}'
-	assert_success
     
 	run tkn task start git \
 		--param="URL=https://github.com/tektoncd/community.git" \
