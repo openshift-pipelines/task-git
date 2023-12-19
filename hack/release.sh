@@ -46,7 +46,7 @@ release() {
     # See task-containers if there is more than one task to support.
     declare task_name=task-git
     declare task_doc=README.md
-    declare task_dir="${RELEASE_DIR}/tasks/${task-name}"
+    declare task_dir="${RELEASE_DIR}/tasks/${task_name}"
     [[ ! -d "${task_dir}" ]] &&
         mkdir -p "${task_dir}"
 
