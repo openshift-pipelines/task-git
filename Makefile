@@ -1,6 +1,7 @@
 # using the chart name and version from chart's metadata
 CHART_NAME ?= $(shell awk '/^name:/ { print $$2 }' Chart.yaml)
 CHART_VERSION ?= $(shell awk '/^version:/ { print $$2 }' Chart.yaml)
+RELEASE_VERSION = v$(CHART_VERSION)
 
 # release directory where the Tekton resources are rendered into.
 RELEASE_DIR ?= /tmp/$(CHART_NAME)-$(CHART_VERSION)
@@ -34,16 +35,35 @@ install:
 	$(call render-template) |kubectl $(ARGS) apply -f -
 
 # pepare a release
+.PHONY: prepare-release
 prepare-release:
-	mkdir -p $(RELEASE_DIR)/task/$(CHART_NAME) || true
-	helm template $(ARGS) . > $(RELEASE_DIR)/task/$(CHART_NAME)/$(CHART_NAME).yaml
-	cp README.md $(RELEASE_DIR)/task/$(CHART_NAME)/
-	go run github.com/openshift-pipelines/tektoncd-catalog/cmd/catalog-cd@main release --output release --version $(CHART_VERSION) $(RELEASE_DIR)/task/$(CHART_NAME)
-	@echo "Now you can release:"
-	@echo "  git tag v$(CHART_VERSION) && git push v$(CHART_VERSION)"
-	@echo "  gh release create v$(CHART_VERSION) --generate-notes"
-	@echo "  gh release upload v$(CHART_VERSION) release/catalog.yaml"
-	@echo "  gh release upload v$(CHART_VERSION) release/resources.tar.gz"
+	mkdir -p $(RELEASE_DIR) || true
+	hack/release.sh $(RELEASE_DIR)
+
+.PHONY: release
+release: prepare-release
+	pushd ${RELEASE_DIR} && \
+		go run github.com/openshift-pipelines/tektoncd-catalog/cmd/catalog-cd@main \
+			release \
+			--output release \
+			--version $(CHART_VERSION) \
+			tasks/* \
+		; \
+	popd
+
+# tags the repository with the RELEASE_VERSION and pushes to "origin"
+git-tag-release-version:
+	if ! git rev-list "${RELEASE_VERSION}".. >/dev/null; then \
+		git tag "$(RELEASE_VERSION)" && \
+			git push origin --tags; \
+	fi
+
+# github-release
+.PHONY: github-release
+github-release: git-tag-release-version release
+	gh release create $(RELEASE_VERSION) --generate-notes && \
+	gh release upload $(RELEASE_VERSION) $(RELEASE_DIR)/release/catalog.yaml && \
+	gh release upload $(RELEASE_VERSION) $(RELEASE_DIR)/release/resources.tar.gz
 
 # packages the helm-chart as a single tarball, using it's name and version to compose the file
 helm-package: clean
