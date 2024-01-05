@@ -1,5 +1,5 @@
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   name: git
@@ -140,9 +140,9 @@ spec:
   stepTemplate:
     env:
 {{- include "environment-variables" . | nindent 6 }}
-{{- if .Values.stepTemplate.resources }}
-    resources:
-  {{- .Values.stepTemplate.resources | toYaml | nindent 6 }}
+{{- if .Values.stepTemplate.computeResources }}
+    computeResources:
+  {{- .Values.stepTemplate.computeResources | toYaml | nindent 6 }}
 {{- end }}
 {{- if .Values.stepTemplate.securityContext }}
     securityContext:
