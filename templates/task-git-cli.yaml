@@ -1,0 +1,29 @@
+{{- $workspaces := "workspaces_git_cli" -}}
+{{- $params := "params_git_cli" -}}
+{{- $results := "" -}}
+{{- $env_vars := list
+      "params.GIT_USER_EMAIL"
+      "params.GIT_USER_NAME"
+      "params.GIT_SCRIPT"
+}}
+{{ $steps := "" -}}
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: git-cli
+  labels:
+    app.kubernetes.io/version: {{ .Chart.Version }}
+{{- if .Values.annotations }}
+  annotations:
+  {{- .Values.annotations | toYaml | nindent 4 }}
+{{- end }}
+spec:
+  description: >-
+    This task can be used to perform git operations.
+
+    Git command that needs to be run can be passed as a script to
+    the task. This task needs authentication to git in order to push
+    after the git operation.
+
+{{ include "spec_git" ( list . $workspaces $params $results $env_vars $steps ) | nindent 2 }}

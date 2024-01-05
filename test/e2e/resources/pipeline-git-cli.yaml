@@ -1,0 +1,40 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: task-git-cli
+spec:
+  description: |
+    pull-revision takes a git script and a commit SHA
+    and validates that the task returns a correct commit SHA. This is an example
+    Pipeline demonstrating the following:
+      - Using the git-cli catalog Task that execute a script to pull a repository
+      - Passing a pulled repo to subsequent Tasks using a Workspace.
+      - Ordering Tasks in a Pipeline using "runAfter" so that
+        git-cli completes before we try to read from the Workspace.
+      - Using a volumeClaimTemplate Volume as a Workspace.
+      - Avoiding hard-coded paths by using a Workspace's path
+        variable instead.
+  params:
+    - name: GIT_SCRIPT
+      type: string
+      description: The script that git-cli needs to execute.
+      default: |
+        git init
+        git remote add origin https://github.com/kelseyhightower/nocode
+        git pull origin master
+  workspaces:
+    - name: source
+      description: |
+        This workspace will receive the pulled git repo and be passed
+        to the next Task for the commit to be checked.
+  tasks:
+    - name: fetch-repo
+      taskRef:
+        name: git-cli
+      workspaces:
+        - name: source
+          workspace: source
+      params:
+        - name: GIT_SCRIPT
+          value: $(params.GIT_SCRIPT)

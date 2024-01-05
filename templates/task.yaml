@@ -1,3 +1,17 @@
+{{- $workspaces := "" -}}
+{{- $params := "params_git_clone" -}}
+{{- $results := "results_git_clone" -}}
+{{- $env_vars := list
+      "params.URL"
+      "params.REVISION"
+      "params.REFSPEC"
+      "params.SUBMODULES"
+      "params.DEPTH"
+      "params.SPARSE_CHECKOUT_DIRECTORIES"
+      "results.COMMITTER_DATE.path"
+      "results.URL.path"
+}}
+{{- $steps := "steps_git_clone" -}}
 ---
 apiVersion: tekton.dev/v1
 kind: Task
@@ -13,180 +27,4 @@ spec:
   description: |
     {{ .Chart.Description }}
 
-  workspaces:
-    - name: output
-      description: |
-        The Git repository directory, data will be placed on the root of the
-        Workspace, or on the relative path defined by the SUBDIRECTORY
-        parameter.
-    - name: ssh-directory
-      optional: true
-      description: |
-        A `.ssh` directory with private key, `known_hosts`, `config`, etc.
-        Copied to the Git user's home before cloning the repository, in order to
-        server as authentication mechanismBinding a Secret to this Workspace is
-        strongly recommended over other volume types.
-    - name: basic-auth
-      optional: true
-      description: |
-        A Workspace containing a `.gitconfig` and `.git-credentials` files.
-        These will be copied to the user's home before Git commands run. All
-        other files in this Workspace are ignored. It is strongly recommended to
-        use `ssh-directory` over `basic-auth` whenever possible, and to bind a
-        Secret to this Workspace over other volume types.
-    - name: ssl-ca-directory
-      optional: true
-      description: |
-        A Workspace containing CA certificates, this will be used by Git to
-        verify the peer with when interacting with remote repositories using
-        HTTPS.
-
-  params:
-    - name: URL
-      type: string
-      description: |
-        Git repository URL.
-    - name: REVISION
-      type: string
-      default: main
-      description: |
-        Revision to checkout, an branch, tag, sha, ref, etc...
-    - name: REFSPEC
-      default: ""
-      description: |
-        Repository `refspec` to fetch before checking out the revision.
-    - name: SUBMODULES
-      type: string
-      default: "true"
-      description: |
-        Initialize and fetch Git submodules.
-    - name: DEPTH
-      type: string
-      default: "1"
-      description: |
-        Number of commits to fetch, a "shallow clone" is a single commit.
-    - name: SSL_VERIFY
-      type: string
-      default: "true"
-      description: |
-        Sets the global `http.sslVerify` value, `false` is not advised unless
-        you trust the remote repository.
-    - name: CRT_FILENAME
-      type: string
-      default: ca-bundle.crt
-      description: |
-        Certificate Authority (CA) bundle filename on the `ssl-ca-directory`
-        Workspace.
-    - name: SUBDIRECTORY
-      type: string
-      default: ""
-      description: |
-        Relative path to the `output` Workspace where the repository will be
-        cloned.
-    - name: SPARSE_CHECKOUT_DIRECTORIES
-      type: string
-      default: ""
-      description: |
-        List of directory patterns split by comma to perform "sparse checkout".
-    - name: DELETE_EXISTING
-      type: string
-      default: "true"
-      description: |
-        Clean out the contents of the `output` Workspace before cloning the
-        repository, if data exists.
-    - name: HTTP_PROXY
-      type: string
-      default: ""
-      description: |
-        HTTP proxy server (non-TLS requests).
-    - name: HTTPS_PROXY
-      type: string
-      default: ""
-      description: |
-        HTTPS proxy server (TLS requests).
-    - name: NO_PROXY
-      type: string
-      default: ""
-      description: |
-        Opt out of proxying HTTP/HTTPS requests.
-    - name: VERBOSE
-      type: string
-      default: "false"
-      description: |
-        Log the commands executed.
-    - name: USER_HOME
-      type: string
-      default: "/home/git"
-      description: |
-        Absolute path to the Git user home directory.
-
-  results:
-    - name: COMMIT
-      description: |
-        The precise commit SHA digest cloned.
-    - name: URL
-      description: |
-        The precise repository URL.
-    - name: COMMITTER_DATE
-      description: |
-        The epoch timestamp of the commit cloned.
-
-  volumes:
-    - name: user-home
-      emptyDir: {}
-    - name: scripts-dir
-      emptyDir: {}
-
-  stepTemplate:
-    env:
-{{- include "environment-variables" . | nindent 6 }}
-{{- if .Values.stepTemplate.computeResources }}
-    computeResources:
-  {{- .Values.stepTemplate.computeResources | toYaml | nindent 6 }}
-{{- end }}
-{{- if .Values.stepTemplate.securityContext }}
-    securityContext:
-  {{- .Values.stepTemplate.securityContext | toYaml | nindent 6 }}
-{{- end }}
-
-  steps:
-    - name: load-scripts
-      image: {{ .Values.images.gitInit }}
-      workingDir: /scripts
-      script: |
-{{- range $path, $content := .Files.Glob  "scripts/*.sh" }}
-  {{- $name := trimPrefix "scripts/" $path }}
-        printf '%s' "{{ $content | toString | b64enc }}" |base64 -d >{{ $name }}
-        chmod +x "{{ $name }}"
-{{- end }}
-      volumeMounts:
-        - name: scripts-dir
-          mountPath: /scripts
-
-    - name: prepare
-      image: {{ .Values.images.gitInit }}
-      command:
-        - /scripts/prepare.sh
-      volumeMounts:
-        - name: scripts-dir
-          mountPath: /scripts
-        - name: user-home
-          mountPath: $(params.USER_HOME)
-
-    - name: git-clone
-      image: {{ .Values.images.gitInit }}
-      command:
-        - /scripts/git-clone.sh
-      volumeMounts:
-        - name: scripts-dir
-          mountPath: /scripts
-        - name: user-home
-          mountPath: $(params.USER_HOME)
-
-    - name: report
-      image: {{ .Values.images.gitInit }}
-      command:
-        - /scripts/report.sh
-      volumeMounts:
-        - name: scripts-dir
-          mountPath: /scripts
+{{ include "spec_git" ( list . $workspaces $params $results $env_vars $steps ) | nindent 2 }}
