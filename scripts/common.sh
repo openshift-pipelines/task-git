@@ -15,8 +15,11 @@ export PARAMS_HTTPS_PROXY="${PARAMS_HTTPS_PROXY:-}"
 export PARAMS_NO_PROXY="${PARAMS_NO_PROXY:-}"
 export PARAMS_VERBOSE="${PARAMS_VERBOSE:-}"
 export PARAMS_USER_HOME="${PARAMS_USER_HOME:-}"
+export PARAMS_GIT_USER_EMAIL="${PARAMS_GIT_USER_EMAIL:-}"
+export PARAMS_GIT_USER_NAME="${PARAMS_GIT_USER_NAME:-}"
+export PARAMS_GIT_SCRIPT="${PARAMS_GIT_SCRIPT:-}"
 
-export WORKSPACES_OUTPUT_PATH="${WORKSPACES_OUTPUT_PATH:-}"
+export WORKSPACES_SOURCE_PATH="${WORKSPACES_SOURCE_PATH:-}"
 export WORKSPACES_SSH_DIRECTORY_BOUND="${WORKSPACES_SSH_DIRECTORY_BOUND:-}"
 export WORKSPACES_SSH_DIRECTORY_PATH="${WORKSPACES_SSH_DIRECTORY_PATH:-}"
 export WORKSPACES_BASIC_AUTH_BOUND="${WORKSPACES_BASIC_AUTH_BOUND:-}"
@@ -28,8 +31,8 @@ export RESULTS_COMMITTER_DATE_PATH="${RESULTS_COMMITTER_DATE_PATH:-}"
 export RESULTS_COMMIT_PATH="${RESULTS_COMMIT_PATH:-}"
 export RESULTS_URL_PATH="${RESULTS_URL_PATH:-}"
 
-# full path to the checkout directory, using the output workspace and subdirector parameter
-export checkout_dir="${WORKSPACES_OUTPUT_PATH}/${PARAMS_SUBDIRECTORY}"
+# full path to the checkout directory, using the source workspace and subdirector parameter
+export checkout_dir="${WORKSPACES_SOURCE_PATH}/${PARAMS_SUBDIRECTORY}"
 
 #
 # Functions
@@ -46,15 +49,17 @@ phase() {
 
 # Inspect the environment variables to assert the minimum configuration is informed.
 assert_required_configuration_or_fail() {
-    [[ -z "${PARAMS_URL}" ]] &&
-        fail "Parameter URL is not set!"
+    ([[ -z "${PARAMS_URL}" ]] && [[ -z "${PARAMS_GIT_SCRIPT}" ]]) &&
+        fail "Parameter URL or SCRIPT is not set!"
 
-    [[ -z "${WORKSPACES_OUTPUT_PATH}" ]] &&
-        fail "Output Workspace is not set!"
+    ([[ -n "${PARAMS_URL}" ]] && [[ -n "${PARAMS_GIT_SCRIPT}" ]]) &&
+        fail "Parameter URL and SCRIPT are set!"
 
-    [[ ! -d "${WORKSPACES_OUTPUT_PATH}" ]] &&
-        fail "Output Workspace directory '${WORKSPACES_OUTPUT_PATH}' not found!"
+    [[ -z "${WORKSPACES_SOURCE_PATH}" ]] &&
+        fail "Source Workspace is not set!"
 
+    [[ ! -d "${WORKSPACES_SOURCE_PATH}" ]] &&
+        fail "Source Workspace directory '${WORKSPACES_SOURCE_PATH}' not found!"
     return 0
 }
 
