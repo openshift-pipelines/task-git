@@ -14,7 +14,7 @@ stepTemplate:
   securityContext:
     runAsNonRoot: true
     runAsUser: 65532
-  resources:
+  computeResources:
     limits:
       cpu: 100m
       memory: 256Mi
