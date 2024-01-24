@@ -49,10 +49,10 @@ phase() {
 
 # Inspect the environment variables to assert the minimum configuration is informed.
 assert_required_configuration_or_fail() {
-    ([[ -z "${PARAMS_URL}" ]] && [[ -z "${PARAMS_GIT_SCRIPT}" ]]) &&
-        fail "Parameter URL or SCRIPT is not set!"
+    [[ -z "${PARAMS_URL}"  &&  -z "${PARAMS_GIT_SCRIPT}" ]] &&
+        fail "Only Param URL or SCRIPT must be set!"
 
-    ([[ -n "${PARAMS_URL}" ]] && [[ -n "${PARAMS_GIT_SCRIPT}" ]]) &&
+    [[ -n "${PARAMS_URL}" && -n "${PARAMS_GIT_SCRIPT}" ]] &&
         fail "Parameter URL and SCRIPT are set!"
 
     [[ -z "${WORKSPACES_SOURCE_PATH}" ]] &&
