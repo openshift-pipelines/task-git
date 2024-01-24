@@ -20,6 +20,7 @@ export PARAMS_GIT_USER_NAME="${PARAMS_GIT_USER_NAME:-}"
 export PARAMS_GIT_SCRIPT="${PARAMS_GIT_SCRIPT:-}"
 
 export WORKSPACES_SOURCE_PATH="${WORKSPACES_SOURCE_PATH:-}"
+export WORKSPACES_OUTPUT_PATH="${WORKSPACES_OUTPUT_PATH:-}"
 export WORKSPACES_SSH_DIRECTORY_BOUND="${WORKSPACES_SSH_DIRECTORY_BOUND:-}"
 export WORKSPACES_SSH_DIRECTORY_PATH="${WORKSPACES_SSH_DIRECTORY_PATH:-}"
 export WORKSPACES_BASIC_AUTH_BOUND="${WORKSPACES_BASIC_AUTH_BOUND:-}"
@@ -32,7 +33,10 @@ export RESULTS_COMMIT_PATH="${RESULTS_COMMIT_PATH:-}"
 export RESULTS_URL_PATH="${RESULTS_URL_PATH:-}"
 
 # full path to the checkout directory, using the source workspace and subdirector parameter
-export checkout_dir="${WORKSPACES_SOURCE_PATH}/${PARAMS_SUBDIRECTORY}"
+[[ ! -z ${WORKSPACES_SOURCE_PATH} ]] && export WORKSPACES_ROOT_PATH="${WORKSPACES_SOURCE_PATH}"
+[[ ! -z ${WORKSPACES_OUTPUT_PATH} ]] && export WORKSPACES_ROOT_PATH="${WORKSPACES_OUTPUT_PATH}"
+
+checkout_dir="${WORKSPACES_ROOT_PATH}/${PARAMS_SUBDIRECTORY}"
 
 #
 # Functions
@@ -50,16 +54,13 @@ phase() {
 # Inspect the environment variables to assert the minimum configuration is informed.
 assert_required_configuration_or_fail() {
     [[ -z "${PARAMS_URL}"  &&  -z "${PARAMS_GIT_SCRIPT}" ]] &&
-        fail "Only Param URL or SCRIPT must be set!"
+        fail "Parameter URL or SCRIPT must be set!"
 
-    [[ -n "${PARAMS_URL}" && -n "${PARAMS_GIT_SCRIPT}" ]] &&
-        fail "Parameter URL and SCRIPT are set!"
+    [[ -z "${WORKSPACES_ROOT_PATH}" ]] &&
+        fail "Root Workspace is not set!"
 
-    [[ -z "${WORKSPACES_SOURCE_PATH}" ]] &&
-        fail "Source Workspace is not set!"
-
-    [[ ! -d "${WORKSPACES_SOURCE_PATH}" ]] &&
-        fail "Source Workspace directory '${WORKSPACES_SOURCE_PATH}' not found!"
+    [[ ! -d "${WORKSPACES_ROOT_PATH}" ]] &&
+        fail "Root Workspace directory not found!"
     return 0
 }
 

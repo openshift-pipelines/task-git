@@ -5,8 +5,20 @@ source $(CDPATH= cd -- "$(dirname -- ${0})" && pwd)/common.sh
 
 assert_required_configuration_or_fail
 
-phase "Setting output workspace as safe directory ('${WORKSPACES_SOURCE_PATH}')"
-git config --global --add safe.directory "${WORKSPACES_SOURCE_PATH}"
+phase "Setting output workspace as safe directory ('${WORKSPACES_ROOT_PATH}')"
+git config --global --add safe.directory "${WORKSPACES_ROOT_PATH}"
+
+# Setting up the config for the git.
+
+if [ -n "${PARAMS_GIT_USER_EMAIL}" ] ; then
+    phase "Setting global email for git ${PARAMS_GIT_USER_EMAIL}"
+    git config --global user.email "${PARAMS_GIT_USER_EMAIL}"
+fi
+
+if [ -n "${PARAMS_GIT_USER_NAME}" ] ; then
+    phase "Setting global username for git ${PARAMS_GIT_USER_NAME}"
+    git config --global user.name "${PARAMS_GIT_USER_NAME}"
+fi
 
 #
 # CA (`ssl-ca-directory` Workspace)

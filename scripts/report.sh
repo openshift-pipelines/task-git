@@ -13,8 +13,8 @@ phase "Collecting cloned repository information ('${checkout_dir}')"
 
 cd "${checkout_dir}" || fail "Not able to enter checkout-dir '${checkout_dir}'"
 
-phase "Setting output workspace as safe directory ('${WORKSPACES_SOURCE_PATH}')"
-git config --global --add safe.directory "${WORKSPACES_SOURCE_PATH}"
+phase "Setting output workspace as safe directory ('${WORKSPACES_ROOT_PATH}')"
+git config --global --add safe.directory "${WORKSPACES_ROOT_PATH}"
 
 result_sha="$(git rev-parse HEAD)"
 result_committer_date="$(git log -1 --pretty=%ct)"

@@ -35,17 +35,5 @@ if [[ "${WORKSPACES_SSH_DIRECTORY_BOUND}" == "true" ]]; then
 	chmod -Rv 400 ${dot_ssh}/*
 fi
 
-# Setting up the config for the git.
-
-if [ -n "${PARAMS_GIT_USER_EMAIL}" ] ; then
-	echo "${[ -n "${PARAMS_GIT_USER_EMAIL}"]}"
-    phase "Setting global email for git ${PARAMS_GIT_USER_EMAIL}"
-    git config --global user.email "${PARAMS_GIT_USER_EMAIL}"
-fi
-
-if [ -n "${PARAMS_GIT_USER_NAME}" ] ; then
-    phase "Setting global username for git ${PARAMS_GIT_USER_NAME}"
-    git config --global user.name "${PARAMS_GIT_USER_NAME}"
-fi
 
 exit 0

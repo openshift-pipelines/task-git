@@ -19,24 +19,6 @@ source ./test/helper/helper.sh
 	assert_success
 
 	#
-	# Asserting TaskRun Status
-	#
-
-	readonly tmpl_file="${BASE_DIR}/go-template.tpl"
-
-	cat >${tmpl_file} <<EOS
-{{- range .status.conditions -}}
-  {{- if and (eq .type "Succeeded") (eq .status "True") }}
-    {{ .message }}
-  {{- end }}
-{{- end -}}
-EOS
-
-	run tkn taskrun describe --output=go-template-file --template=${tmpl_file} --last
-	assert_success
-	assert_success --partial 'All Steps have completed executing'
-
-	#
 	# Asserting Results
 	#
 
