@@ -1,4 +1,6 @@
 {{- define "workspaces_git_cli" -}}
+- name: source
+  description: A workspace that contains the fetched git repository.
 - name: input
   optional: true
   description: |

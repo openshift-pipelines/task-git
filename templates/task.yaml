@@ -1,4 +1,4 @@
-{{- $workspaces := "" -}}
+{{- $workspaces := "workspaces_git_clone" -}}
 {{- $params := "params_git_clone" -}}
 {{- $results := "results_git_clone" -}}
 {{- $env_vars := list
@@ -10,6 +10,7 @@
       "params.SPARSE_CHECKOUT_DIRECTORIES"
       "results.COMMITTER_DATE.path"
       "results.URL.path"
+      "workspaces.output.path"
 }}
 {{- $steps := "steps_git_clone" -}}
 ---
@@ -27,4 +28,4 @@ spec:
   description: |
     {{ .Chart.Description }}
 
-{{ include "spec_git" ( list . $workspaces $params $results $env_vars $steps ) | nindent 2 }}
+{{ include "spec_git" ( list . $workspaces $params $results $env_vars $steps "output" ) | nindent 2 }}

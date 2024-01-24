@@ -18,7 +18,6 @@
           "params.NO_PROXY"
           "params.VERBOSE"
           "params.USER_HOME"
-          "workspaces.source.path"
           "workspaces.ssh-directory.bound"
           "workspaces.ssh-directory.path"
           "workspaces.basic-auth.bound"

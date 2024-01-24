@@ -4,11 +4,6 @@
 
 */ -}}
 {{- define "common_workspaces" -}}
-- name: source
-  description: |
-    A workspace that contains the fetched git repository, data will be placed on the root of the
-    Workspace, or on the relative path defined by the SUBDIRECTORY
-    parameter.
 - name: ssh-directory
   optional: true
   description: |

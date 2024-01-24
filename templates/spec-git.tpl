@@ -4,6 +4,7 @@
   {{- $results := index . 3 -}}
   {{- $env_vars := index . 4 -}}
   {{- $steps := index . 5 -}}
+  {{- $workspace := index . 6 -}}
   {{- with index . 0 -}}
 workspaces:
 {{- include "common_workspaces" . | nindent 2}}
@@ -47,7 +48,7 @@ stepTemplate:
 
 steps:
 {{- include "load_scripts" ( list . "" ) | nindent 2 }}
-{{- include "common_steps" . | nindent 2 }}
+{{- include "common_steps" ( list . $workspace ) | nindent 2 }}
 {{- if ne $steps "" }}
   {{- include $steps . | nindent 2}}
 {{- end}}
