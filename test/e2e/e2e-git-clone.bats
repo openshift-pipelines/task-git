@@ -13,7 +13,7 @@ source ./test/helper/helper.sh
 		--param="DEPTH=1" \
 		--param="VERBOSE=true" \
 		--use-param-defaults \
-		--workspace name=output,volumeClaimTemplateFile=./test/e2e/resources/workspace-template.yaml \
+		--workspace name=source,volumeClaimTemplateFile=./test/e2e/resources/workspace-template.yaml \
 		--skip-optional-workspace \
 		--showlog >&3
 	assert_success
@@ -22,30 +22,5 @@ source ./test/helper/helper.sh
 	# Asserting TaskRun Status
 	#
 
-	readonly tmpl_file="${BASE_DIR}/go-template.tpl"
-
-	cat >${tmpl_file} <<EOS
-{{- range .status.conditions -}}
-  {{- if and (eq .type "Succeeded") (eq .status "True") }}
-    {{ .message }}
-  {{- end }}
-{{- end -}}
-EOS
-
-	run tkn taskrun describe --output=go-template-file --template=${tmpl_file} --last
-	assert_success
-	assert_success --partial 'All Steps have completed executing'
-
-	#
-	# Asserting Results
-	#
-
-	cat >${tmpl_file} <<EOS
-{{- range .status.results -}}
-  {{ printf "%s=%s\n" .name .value }}
-{{- end -}}
-EOS
-	run tkn taskrun describe --output=go-template-file --template=${tmpl_file} --last
-	assert_success
-	assert_output --regexp $'^COMMIT=\S+\nCOMMITTER_DATE=\S+\nURL=\S+.*'
+	assert_tekton_resource "taskrun" --regexp $'\S+.\nCOMMIT=\S+.\nCOMMITTER_DATE=\S+.\nURL=\S+*'
 }
