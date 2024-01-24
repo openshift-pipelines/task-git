@@ -40,12 +40,5 @@ EOS
 	# Asserting Results
 	#
 
-	cat >${tmpl_file} <<EOS
-{{- range .status.results -}}
-  {{ printf "%s=%s\n" .name .value }}
-{{- end -}}
-EOS
-	run tkn taskrun describe --output=go-template-file --template=${tmpl_file} --last
-	assert_success
-	assert_output --regexp $'^COMMIT=\S+\nCOMMITTER_DATE=\S+\nURL=\S+.*'
+	assert_tekton_resource "taskrun" --regexp $'\S+.\nCOMMIT=\S+.\nCOMMITTER_DATE=\S+.\nURL=\S+*'
 }
