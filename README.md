@@ -6,6 +6,7 @@
 		<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/openshift-pipelines/task-git">
 	</a>
 </p>
+
 ## Task Git
 
 This repository provides various tasks like:
