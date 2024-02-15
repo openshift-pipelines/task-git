@@ -17,7 +17,7 @@
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
-  name: git
+  name: git-clone
   labels:
     app.kubernetes.io/version: {{ .Chart.Version }}
 {{- if .Values.annotations }}
