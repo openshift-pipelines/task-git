@@ -29,7 +29,7 @@
   type: string
   default: ""
   description: |
-    Relative path to the `source` Workspace where the git repository will be present.
+    Relative path to the default Workspace where the git repository will be present.
 - name: USER_HOME
   type: string
   default: "/home/git"
@@ -39,8 +39,7 @@
   type: string
   default: "true"
   description: |
-    Clean out the contents of the `output` Workspace before cloning the
-    repository, if data exists.
+    Clean out the contents of the default Workspace before specific git operations occur, if data exists.
 - name: VERBOSE
   type: string
   default: "false"

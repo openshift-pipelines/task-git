@@ -8,7 +8,7 @@ source ./test/helper/helper.sh
 	run kubectl delete taskrun --all
 	assert_success
 
-	run tkn task start git \
+	run tkn task start git-clone \
 		--param="URL=https://github.com/tektoncd/community.git" \
 		--param="DEPTH=1" \
 		--param="VERBOSE=true" \
