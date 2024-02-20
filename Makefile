@@ -48,6 +48,10 @@ helm-template:
 install:
 	$(call render-template) |kubectl $(ARGS) apply -f -
 
+# renders and remove the resources (task)
+remove:
+	$(call render-template) |kubectl $(ARGS) delete -f -
+
 # pepare a release
 .PHONY: prepare-release
 prepare-release:
