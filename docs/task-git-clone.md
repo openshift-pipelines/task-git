@@ -12,7 +12,7 @@ metadata:
   name: example-taskrun
 spec:
   taskRef:
-    name: git-cli
+    name: git-clone
   params:
     - name: URL
       value: https://github.com/openshift-pipelines/task-git.git
@@ -29,7 +29,7 @@ A single Workspace is required for this Task, while the optional Workspaces will
 
 ## `output`
 
-The `output` is a required Workspace, represents the primary location where the Git repository data will be stored, and later on, this Workspace will be monted in subsequent Pipeline's Task.
+The `output` is a required Workspace, represents the primary location where the Git repository data will be stored, and later on, this Workspace will be mounted in subsequent Pipeline's Task.
 
 Knowing the Workspace data will be employed on other Tasks, the recommended approach is using a [persistent volume][tektonPVC], for instance a [`PersistentVolumeClaim` (PVC)][k8sPVC].
 
