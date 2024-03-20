@@ -9,6 +9,13 @@ annotations:
   tekton.dev/tags: git
   tekton.dev/displayName: "git"
   tekton.dev/platforms: "linux/amd64,linux/s390x,linux/ppc64le,linux/arm64"
+  artifacthub.io/maintainers: |
+      - name: OpenShift Pipeline task maintainers
+        email: pipelines-extcomm@redhat.com
+  artifacthub.io/provider: Red Hat
+  artifacthub.io/recommendations: |
+      - url: https://tekton.dev/
+  artifacthub.io/category: integration-delivery
 
 stepTemplate:
   securityContext:
