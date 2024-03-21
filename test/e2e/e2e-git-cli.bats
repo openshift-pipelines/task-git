@@ -18,6 +18,6 @@ source ./test/helper/helper.sh
 	sleep 30
 
     # assering the taskrun status, making sure all steps have been successful
-    assert_tekton_resource "taskrun" --regexp $'\S+.\nCOMMIT=6c073b08f7987018cbb2cb9a5747c84913b3608e'
+    assert_tekton_resource "taskrun" --regexp $'\S+\nCOMMIT=6c073b08f7987018cbb2cb9a5747c84913b3608e'
     assert_tekton_resource "pipelinerun" --partial '(Failed: 0, Cancelled 0), Skipped: 0'
 }
