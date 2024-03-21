@@ -18,9 +18,12 @@ source ./test/helper/helper.sh
 		--showlog >&3
 	assert_success
 
+    # waiting a few seconds before asserting results
+	sleep 30
+
 	#
 	# Asserting Results
 	#
 
-	assert_tekton_resource "taskrun" --regexp $'\S+.\nCOMMIT=\S+.\nCOMMITTER_DATE=\S+.\nURL=\S+*'
+	assert_tekton_resource "taskrun" --regexp $'\S+\nCOMMIT=\S+\nCOMMITTER_DATE=\S+\nURL=\S+'
 }

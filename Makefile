@@ -55,7 +55,7 @@ prepare-release:
 	hack/release.sh $(RELEASE_DIR)
 
 .PHONY: release
-release: prepare-release
+release: ${CATALOGCD} prepare-release
 	pushd ${RELEASE_DIR} && \
 		$(CATALOGCD) release \
 			--output release \
@@ -96,6 +96,14 @@ test-integration:
 # installation of the current project's task (using helm).
 test-e2e: install
 	$(BATS_CORE) $(BATS_FLAGS) $(ARGS) $(E2E_TESTS)
+
+.PHONY: test-e2e-git-clone
+test-e2e-git-clone: E2E_TESTS=./test/e2e/*clone.bats
+test-e2e-git-clone: test-e2e
+
+.PHONY: test-e2e-git-cli
+test-e2e-git-cli: E2E_TESTS=./test/e2e/*cli.bats
+test-e2e-git-cli: test-e2e
 
 # Run all the end-to-end tests against the current openshift context.
 # It is used mainly by the CI and ideally shouldn't differ that much from test-e2e
