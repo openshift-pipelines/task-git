@@ -1,7 +1,4 @@
 ---
-images:
-  # FIXME: Make sure we use an up-to-date version
-  gitInit: registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:c4b2183f7c7997bd401d86b33eefb637b3ef2fa90618e875106292cd69a15c14
 
 annotations:
   tekton.dev/pipelines.minVersion: "0.41.0"

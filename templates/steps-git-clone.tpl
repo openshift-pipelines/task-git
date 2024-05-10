@@ -1,6 +1,6 @@
 {{- define "steps_git_clone" -}}
 - name: report
-  image: {{ .Values.images.gitInit }}
+  image: "$(params.GIT_INIT_IMAGE)"
   command:
     - /scripts/report.sh
   volumeMounts:

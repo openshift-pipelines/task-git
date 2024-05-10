@@ -9,6 +9,7 @@
 */ -}}
 {{- define "common_environment_variables" -}}
     {{- range list
+          "params.GIT_INIT_IMAGE"
           "params.SSL_VERIFY"
           "params.CRT_FILENAME"
           "params.SUBDIRECTORY"

@@ -2,7 +2,7 @@
   {{- $workspace := index . 1 -}}
   {{- with index . 0 -}}
 - name: prepare
-  image: {{ .Values.images.gitInit }}
+  image: "$(params.GIT_INIT_IMAGE)"
   {{- if eq $workspace "source" }}
   workingDir: $(workspaces.source.path)
   {{- end }}
@@ -18,7 +18,7 @@
       mountPath: "$(params.USER_HOME)"
 
 - name: git-run
-  image: {{ .Values.images.gitInit }}
+  image: "$(params.GIT_INIT_IMAGE)"
   {{- if eq $workspace "source" }}
   workingDir: $(workspaces.source.path)
   {{- end }}

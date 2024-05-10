@@ -4,6 +4,9 @@
 
 */ -}}
 {{- define "common_params" -}}
+- name: GIT_INIT_IMAGE
+  description: git init container base image to run this task
+  default: registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:c4b2183f7c7997bd401d86b33eefb637b3ef2fa90618e875106292cd69a15c14
 - name: CRT_FILENAME
   type: string
   default: ca-bundle.crt

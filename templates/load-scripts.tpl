@@ -7,7 +7,7 @@
 {{- define "load_scripts" -}}
   {{- $global := index . 0 -}}
 - name: load-scripts
-  image: {{ $global.Values.images.gitInit }}
+  image: "$(params.GIT_INIT_IMAGE)"
   workingDir: /scripts
   script: |
     set -e
