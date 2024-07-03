@@ -24,7 +24,7 @@
           "workspaces.basic-auth.path"
           "workspaces.ssl-ca-directory.bound"
           "workspaces.ssl-ca-directory.path"
-          "results.commit.path"
+          "results.COMMIT.path"
     }}
 - name: {{ . | upper | replace "." "_" | replace "-" "_" }}
   value: "$({{ . }})"
