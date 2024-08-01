@@ -4,7 +4,7 @@ images:
   gitInit: registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:c4b2183f7c7997bd401d86b33eefb637b3ef2fa90618e875106292cd69a15c14
 
 annotations:
-  tekton.dev/pipelines.minVersion: "0.41.0"
+  tekton.dev/pipelines.minVersion: "0.54.0"
   tekton.dev/categories: Git
   tekton.dev/tags: git
   tekton.dev/displayName: "git"
@@ -17,10 +17,10 @@ annotations:
       - url: https://tekton.dev/
   artifacthub.io/category: integration-delivery
 
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
 stepTemplate:
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 65532
   computeResources:
     limits:
       cpu: 100m

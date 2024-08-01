@@ -1,0 +1,30 @@
+{{- $params := "params_git_clone" -}}
+{{- $results := "results_git_clone" -}}
+{{- $env_vars := list
+      "params.URL"
+      "params.REVISION"
+      "params.REFSPEC"
+      "params.SUBMODULES"
+      "params.DEPTH"
+      "params.SPARSE_CHECKOUT_DIRECTORIES"
+      "params.OUTPUT_PATH"
+      "params.SSH_DIRECTORY_PATH"
+      "params.BASIC_AUTH_PATH"
+      "params.SSL_CA_DIRECTORY_PATH"
+}}
+---
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: git-clone
+  labels:
+    app.kubernetes.io/version: {{ .Chart.Version }}
+{{- if .Values.annotations }}
+  annotations:
+  {{- .Values.annotations | toYaml | nindent 4 }}
+{{- end }}
+spec:
+  description: |
+    {{ .Chart.Description }}
+
+{{ include "spec_stepaction_git" ( list . $params $results $env_vars ) | nindent 2 }}

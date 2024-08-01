@@ -23,13 +23,13 @@ extract_name() {
     echo "${filename%.*}"
 }
 
-# Finds the respective documentation for the task name, however, for s2i it only consider the
-# "task-s2i" part instead of the whole name.
+# Function to find the respective documentation for a given name, however, for s2i it only consider the
+## "task-s2i" part instead of the whole name.
 find_doc() {
-    declare task_name="${1}"
-    [[ "${task_name}" == "task-s2i"* ]] &&
-        task_name="task-s2i"
-    find docs/ -name "${task_name}*.md"
+    declare name="${1}"
+    [[ "${name}" == "task-s2i"* ]] &&
+        name="task-s2i"
+    find docs/ -name "${name}*.md"
 }
 
 #
@@ -42,31 +42,43 @@ release() {
     [[ ! -d "${RELEASE_DIR}" ]] &&
         panic "Release dir is not found '${RELEASE_DIR}'!"
 
-    # releasing all task templates using the following glob expression
-    for t in $(ls -1 templates/task-*.yaml); do
-        declare task_name=$(extract_name ${t})
-        [[ -z "${task_name}" ]] &&
-            panic "Unable to extract Task name from '${t}'!"
+    # Release task templates
+    release_templates "task" "templates/task-*.yaml" "tasks"
 
-        declare task_doc="$(find_doc ${task_name})"
-        [[ -z "${task_doc}" ]] &&
-            panic "Unable to find documentation file for '${task_name}'!"
+    # Release StepAction templates
+    release_templates "stepaction" "templates/stepaction-*.yaml" "stepactions"
+}
 
-        declare task_dir="${RELEASE_DIR}/tasks/${task_name}"
-        [[ ! -d "${task_dir}" ]] &&
-            mkdir -p "${task_dir}"
+release_templates() {
+    local template_type=$1
+    local glob_expression=$2
+    local release_subdir=$3
+
+    # releasing all templates using the following glob expression
+    for t in $(ls -1 ${glob_expression}); do
+        declare name=$(extract_name ${t})
+          [[ -z "${name}" ]] &&
+              panic "Unable to extract name from '${t}'!"
+
+        local doc=$(find_doc ${name})
+        [[ -z "${doc}" ]] &&
+            panic "Unable to find documentation file for '${name}'!"
+
+        local dir="${RELEASE_DIR}/${release_subdir}/${name}"
+          [[ ! -d "${dir}" ]] &&
+              mkdir -p "${dir}"
 
         # rendering the helm template for the specific file, using the resource name for the
         # filename respectively
-        echo "# Rendering '${task_name}' at '${task_dir}'..."
-        helm template --show-only=${t} . >${task_dir}/${task_name}.yaml ||
+        echo "# Rendering '${name}' at '${dir}'..."
+        helm template --show-only=${t} . >${dir}/${name}.yaml ||
             panic "Unable to render '${t}'!"
 
         # finds the respective documentation file copying as "README.md", on the same
         # directory where the respective task is located
-        echo "# Copying '${task_name}' documentation file '${task_doc}'..."
-        cp -v -f ${task_doc} "${task_dir}/README.md" ||
-            panic "Unable to copy '${task_doc}' into '${task_dir}'"
+        echo "# Copying '${name}' documentation file '${doc}'..."
+        cp -v -f ${doc} "${dir}/README.md" ||
+            panic "Unable to copy '${doc}' into '${dir}'"
     done
 }
 
