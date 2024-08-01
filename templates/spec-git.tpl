@@ -41,9 +41,9 @@ stepTemplate:
   computeResources:
   {{- .Values.stepTemplate.computeResources | toYaml | nindent 4 }}
 {{- end }}
-{{- if .Values.stepTemplate.securityContext }}
+{{- if .Values.securityContext }}
   securityContext:
-  {{- .Values.stepTemplate.securityContext | toYaml | nindent 4 }}
+  {{- .Values.securityContext | toYaml | nindent 4 }}
 {{- end }}
 
 steps:
