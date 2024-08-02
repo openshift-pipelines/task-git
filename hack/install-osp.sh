@@ -113,6 +113,7 @@ EOF
 rollout_status "openshift-pipelines" "tekton-pipelines-controller"
 rollout_status "openshift-pipelines" "tekton-pipelines-webhook"
 
+oc patch tektonconfig config --type=json -p='[{"op": "replace", "path": "/spec/pipeline/enable-step-actions", "value": true}]'
 oc get -n openshift-pipelines pods
 tkn version
 
