@@ -24,7 +24,5 @@ metadata:
   {{- .Values.annotations | toYaml | nindent 4 }}
 {{- end }}
 spec:
-  description: |
-    {{ .Chart.Description }}
 
 {{ include "spec_stepaction_git" ( list . $params $results $env_vars ) | nindent 2 }}
