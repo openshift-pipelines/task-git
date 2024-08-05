@@ -13,7 +13,7 @@
       "params.SSL_CA_DIRECTORY_PATH"
 }}
 ---
-apiVersion: tekton.dev/v1alpha1
+apiVersion: tekton.dev/v1beta1
 kind: StepAction
 metadata:
   name: git-clone
