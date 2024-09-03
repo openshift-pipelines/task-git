@@ -47,7 +47,6 @@ stepTemplate:
 {{- end }}
 
 steps:
-{{- include "load_scripts" ( list . "" ) | nindent 2 }}
 {{- include "common_steps" ( list . $workspace ) | nindent 2 }}
 {{- if ne $steps "" }}
   {{- include $steps . | nindent 2}}
