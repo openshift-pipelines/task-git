@@ -8,8 +8,7 @@
   type: string
   default: ca-bundle.crt
   description: |
-    Certificate Authority (CA) bundle filename on the `ssl-ca-directory`
-    Workspace.
+    Certificate Authority (CA) bundle filename in the SSL CA directory.
 - name: HTTP_PROXY
   type: string
   default: ""
@@ -29,7 +28,8 @@
   type: string
   default: ""
   description: |
-    Relative path to the default Workspace where the git repository will be present.
+    Path to the directory for storing the cloned Git repository, relative to the
+    output directory.
 - name: USER_HOME
   type: string
   default: "/home/git"
@@ -39,12 +39,12 @@
   type: string
   default: "true"
   description: |
-    Clean out the contents of the default Workspace before specific git operations occur, if data exists.
+    Clean out the contents of the default Workspace before specific Git operations occur, if data exists.
 - name: VERBOSE
   type: string
   default: "false"
   description: |
-    Log the commands executed.
+    Log the executed commands.
 - name: SSL_VERIFY
   type: string
   default: "true"
