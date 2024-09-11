@@ -73,7 +73,7 @@ release: ${CATALOGCD} prepare-release
 git-tag-release-version:
 	if ! git rev-list "${RELEASE_VERSION}".. >/dev/null; then \
 		git tag -f "$(RELEASE_VERSION)" && \
-			git push origin --tags -f; \
+			git push origin --tags; \
 	fi
 
 # github-release
