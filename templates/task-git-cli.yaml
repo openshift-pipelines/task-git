@@ -7,7 +7,7 @@
       "params.GIT_SCRIPT"
       "workspaces.source.path"
 }}
-{{ $steps := "" -}}
+{{ $script := "" -}}
 ---
 apiVersion: tekton.dev/v1
 kind: Task
@@ -27,4 +27,4 @@ spec:
     the task. This task needs authentication to git in order to push
     after the git operation.
 
-{{ include "spec_git" ( list . $workspaces $params $results $env_vars $steps "source" ) | nindent 2 }}
+{{ include "spec_git" ( list . $workspaces $params $results $env_vars $script "source" ) | nindent 2 }}

@@ -1,4 +1,5 @@
 {{- define "common_steps" -}}
+  {{- $script := index . 2 -}}
   {{- $workspace := index . 1 -}}
   {{- with index . 0 -}}
 - name: prepare-and-run
@@ -10,7 +11,7 @@
   workingDir: $(workspaces.output.path)
   {{- end }}
   script: |
-{{- include "load_scripts" ( list . ( list "" ) ( list "/scripts/prepare.sh" "/scripts/git-run.sh" ) ) | nindent 4 }}
+{{- include "load_scripts" ( list . ( list "" ) ( list "/scripts/prepare.sh" "/scripts/git-run.sh" $script ) ) | nindent 4 }}
   volumeMounts:
     - name: scripts-dir
       mountPath: /scripts

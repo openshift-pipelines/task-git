@@ -3,7 +3,7 @@
   {{- $params := index . 2 -}}
   {{- $results := index . 3 -}}
   {{- $env_vars := index . 4 -}}
-  {{- $steps := index . 5 -}}
+  {{- $script := index . 5 -}}
   {{- $workspace := index . 6 -}}
   {{- with index . 0 -}}
 workspaces:
@@ -47,10 +47,7 @@ stepTemplate:
 {{- end }}
 
 steps:
-{{- include "common_steps" ( list . $workspace ) | nindent 2 }}
-{{- if ne $steps "" }}
-  {{- include $steps . | nindent 2}}
-{{- end}}
+{{- include "common_steps" ( list . $workspace $script ) | nindent 2 }}
 
   {{- end -}}
 {{- end -}}
